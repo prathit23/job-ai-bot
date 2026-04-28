@@ -26,6 +26,8 @@ ROLE_HEADINGS = [
 ]
 
 RESPONSIBILITY_HEADINGS = [
+    "Responsibilities:",
+    "Responsibilities",
     "What you'll do",
     "What you will do",
     "What you'll achieve",
@@ -36,6 +38,12 @@ RESPONSIBILITY_HEADINGS = [
 ]
 
 QUALIFICATION_HEADINGS = [
+    "You May Be a Good Fit If You Have:",
+    "You May Be a Good Fit If You Have",
+    "You may be a good fit if you have:",
+    "You may be a good fit if you have",
+    "You may be a good fit if you:",
+    "You may be a good fit if you",
     "Who you are",
     "We're looking for someone who",
     "We are looking for someone who",
@@ -44,6 +52,42 @@ QUALIFICATION_HEADINGS = [
     "Qualifications",
     "Skills you'll need",
     "We're excited about you because",
+]
+
+PREFERRED_QUALIFICATION_HEADINGS = [
+    "Strong Candidates May Also Have:",
+    "Strong Candidates May Also Have",
+    "Preferred qualifications:",
+    "Preferred qualifications",
+    "Nice to have:",
+    "Nice to have",
+]
+
+COMPENSATION_HEADINGS = [
+    "Annual Salary:",
+    "Annual Salary",
+    "Compensation:",
+    "Compensation",
+    "Salary range:",
+    "Salary range",
+]
+
+LOGISTICS_HEADINGS = [
+    "Logistics",
+    "Location-based hybrid policy:",
+    "Location-based hybrid policy",
+    "Minimum education:",
+    "Minimum education",
+]
+
+VISA_HEADINGS = [
+    "Visa sponsorship:",
+    "Visa sponsorship",
+]
+
+DEADLINE_HEADINGS = [
+    "Deadline to Apply:",
+    "Deadline to Apply",
 ]
 
 COMPANY_HEADINGS = [
@@ -103,13 +147,21 @@ US_LOCATION_TERMS = [
     "tx",
 ]
 
-STOP_HEADINGS = sorted(
-    set(ROLE_HEADINGS + RESPONSIBILITY_HEADINGS + QUALIFICATION_HEADINGS + COMPANY_HEADINGS)
+SECTION_STOP_HEADINGS = sorted(
+    set(
+        ROLE_HEADINGS
+        + ["Responsibilities:", "Responsibilities"]
+        + QUALIFICATION_HEADINGS
+        + PREFERRED_QUALIFICATION_HEADINGS
+        + COMPENSATION_HEADINGS
+        + LOGISTICS_HEADINGS
+        + VISA_HEADINGS
+        + DEADLINE_HEADINGS
+        + COMPANY_HEADINGS
+    )
     | {
         "About the Team",
-        "Preferred qualifications",
         "Benefits",
-        "Compensation",
         "Equal Opportunity",
         "Our Commitment",
         "Apply for this job",
@@ -181,6 +233,11 @@ def write_csv(jobs: list[dict[str, Any]], path: Path) -> None:
         "role_overview",
         "key_responsibilities",
         "qualifications",
+        "preferred_qualifications",
+        "compensation",
+        "logistics",
+        "visa_sponsorship",
+        "application_deadline",
         "company_overview",
         "full_description",
         "status",
@@ -203,6 +260,11 @@ def write_csv(jobs: list[dict[str, Any]], path: Path) -> None:
                     "role_overview": sections["role_overview"],
                     "key_responsibilities": sections["key_responsibilities"],
                     "qualifications": sections["qualifications"],
+                    "preferred_qualifications": sections["preferred_qualifications"],
+                    "compensation": sections["compensation"],
+                    "logistics": sections["logistics"],
+                    "visa_sponsorship": sections["visa_sponsorship"],
+                    "application_deadline": sections["application_deadline"],
                     "company_overview": sections["company_overview"],
                     "full_description": clean_text(job.get("description")),
                     "status": _csv_value(job.get("status")),
@@ -255,6 +317,11 @@ def extract_role_sections(job: dict[str, Any]) -> dict[str, str]:
             "role_overview": "No role overview available.",
             "key_responsibilities": "No responsibilities available.",
             "qualifications": "No qualifications section found.",
+            "preferred_qualifications": "No preferred qualifications section found.",
+            "compensation": "No compensation section found.",
+            "logistics": "No logistics section found.",
+            "visa_sponsorship": "No visa sponsorship section found.",
+            "application_deadline": "No application deadline section found.",
             "company_overview": "No company overview available.",
         }
 
@@ -262,12 +329,22 @@ def extract_role_sections(job: dict[str, Any]) -> dict[str, str]:
     role_text = _section_after_heading(description, ROLE_HEADINGS)
     responsibility_text = _section_after_heading(description, RESPONSIBILITY_HEADINGS)
     qualification_text = _section_after_heading(description, QUALIFICATION_HEADINGS)
+    preferred_qualification_text = _section_after_heading(description, PREFERRED_QUALIFICATION_HEADINGS)
+    compensation_text = _section_after_heading(description, COMPENSATION_HEADINGS)
+    logistics_text = _section_after_heading(description, LOGISTICS_HEADINGS)
+    visa_text = _section_after_heading(description, VISA_HEADINGS)
+    deadline_text = _section_after_heading(description, DEADLINE_HEADINGS)
     company_text = _section_after_heading(description, COMPANY_HEADINGS)
 
     return {
         "role_overview": role_text or _fallback_role_text(sentences),
         "key_responsibilities": responsibility_text or _responsibility_from_sentences(sentences),
         "qualifications": qualification_text or "No qualifications section found.",
+        "preferred_qualifications": preferred_qualification_text or "No preferred qualifications section found.",
+        "compensation": compensation_text or _inline_value_after_heading(description, COMPENSATION_HEADINGS) or "No compensation section found.",
+        "logistics": logistics_text or "No logistics section found.",
+        "visa_sponsorship": visa_text or _inline_value_after_heading(description, VISA_HEADINGS) or "No visa sponsorship section found.",
+        "application_deadline": deadline_text or _inline_value_after_heading(description, DEADLINE_HEADINGS) or "No application deadline section found.",
         "company_overview": company_text or _fallback_company_text(sentences),
     }
 
@@ -292,7 +369,7 @@ def _section_after_heading(text: str, headings: list[str]) -> str:
 def _next_heading_index(text: str, start: int) -> int:
     lower = text.lower()
     indexes = []
-    for heading in STOP_HEADINGS:
+    for heading in SECTION_STOP_HEADINGS:
         match = re.search(rf"\b{re.escape(heading.lower())}\b", lower[start + 20 :])
         if match:
             indexes.append(start + 20 + match.start())
@@ -345,6 +422,23 @@ def _clean_section(text: str) -> str:
     text = re.sub(r"\s+", " ", text).strip()
     text = re.sub(r"^(overview|application)\b", "", text, flags=re.IGNORECASE).strip(" :-")
     return text
+
+
+def _inline_value_after_heading(text: str, headings: list[str], max_chars: int = 600) -> str:
+    normalized = _normalize_apostrophes(text)
+    lower = normalized.lower()
+    for heading in headings:
+        index = lower.find(heading.lower())
+        if index < 0:
+            continue
+        start = index + len(heading)
+        stop_candidates = [normalized.find(marker, start + 1) for marker in [". ", "\n"]]
+        stop_candidates = [candidate for candidate in stop_candidates if candidate >= 0]
+        stop = min(stop_candidates) if stop_candidates else min(len(normalized), start + max_chars)
+        value = normalized[start:stop].strip(" :-\n\t")
+        if value:
+            return value
+    return ""
 
 
 def sentence_summary(text: str, max_sentences: int = 2) -> str:
