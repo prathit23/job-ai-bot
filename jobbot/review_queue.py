@@ -32,9 +32,6 @@ RESPONSIBILITY_HEADINGS = [
     "What you will do",
     "What you'll achieve",
     "What you will achieve",
-    "Responsibilities",
-    "You will",
-    "In this role",
 ]
 
 QUALIFICATION_HEADINGS = [
@@ -149,8 +146,7 @@ US_LOCATION_TERMS = [
 
 SECTION_STOP_HEADINGS = sorted(
     set(
-        ROLE_HEADINGS
-        + ["Responsibilities:", "Responsibilities"]
+        ["Responsibilities:", "Responsibilities", "What you'll do", "What you will do", "What you'll achieve", "What you will achieve"]
         + QUALIFICATION_HEADINGS
         + PREFERRED_QUALIFICATION_HEADINGS
         + COMPENSATION_HEADINGS
@@ -162,6 +158,7 @@ SECTION_STOP_HEADINGS = sorted(
     | {
         "About the Team",
         "Benefits",
+        "The annual compensation range",
         "Equal Opportunity",
         "Our Commitment",
         "Apply for this job",
@@ -330,10 +327,10 @@ def extract_role_sections(job: dict[str, Any]) -> dict[str, str]:
     responsibility_text = _section_after_heading(description, RESPONSIBILITY_HEADINGS)
     qualification_text = _section_after_heading(description, QUALIFICATION_HEADINGS)
     preferred_qualification_text = _section_after_heading(description, PREFERRED_QUALIFICATION_HEADINGS)
-    compensation_text = _section_after_heading(description, COMPENSATION_HEADINGS)
+    compensation_text = _section_after_heading(description, COMPENSATION_HEADINGS, prefer_earliest=False)
     logistics_text = _section_after_heading(description, LOGISTICS_HEADINGS)
-    visa_text = _section_after_heading(description, VISA_HEADINGS)
-    deadline_text = _section_after_heading(description, DEADLINE_HEADINGS)
+    visa_text = _section_after_heading(description, VISA_HEADINGS, prefer_earliest=False)
+    deadline_text = _section_after_heading(description, DEADLINE_HEADINGS, prefer_earliest=False)
     company_text = _section_after_heading(description, COMPANY_HEADINGS)
 
     return {
@@ -349,17 +346,20 @@ def extract_role_sections(job: dict[str, Any]) -> dict[str, str]:
     }
 
 
-def _section_after_heading(text: str, headings: list[str]) -> str:
+def _section_after_heading(text: str, headings: list[str], prefer_earliest: bool = True) -> str:
     normalized = _normalize_apostrophes(text)
     starts = []
     lower = normalized.lower()
     for heading in headings:
-        match = re.search(rf"\b{re.escape(heading.lower())}\b", lower)
-        if match:
-            starts.append((match.start(), heading))
+        index = _find_heading(lower, heading.lower())
+        if index >= 0:
+            starts.append((index, heading))
     if not starts:
         return ""
-    start, heading = min(starts, key=lambda item: item[0])
+    if prefer_earliest:
+        start, heading = min(starts, key=lambda item: item[0])
+    else:
+        start, heading = starts[0]
     content_start = start + len(heading)
     stop = _next_heading_index(normalized, content_start)
     section = normalized[content_start:stop].strip(" :-\n\t")
@@ -370,10 +370,24 @@ def _next_heading_index(text: str, start: int) -> int:
     lower = text.lower()
     indexes = []
     for heading in SECTION_STOP_HEADINGS:
-        match = re.search(rf"\b{re.escape(heading.lower())}\b", lower[start + 20 :])
-        if match:
-            indexes.append(start + 20 + match.start())
+        index = _find_heading(lower[start + 20 :], heading.lower())
+        if index >= 0:
+            indexes.append(start + 20 + index)
     return min(indexes) if indexes else len(text)
+
+
+def _find_heading(lower_text: str, lower_heading: str) -> int:
+    index = lower_text.find(lower_heading)
+    while index >= 0:
+        before = lower_text[index - 1] if index > 0 else " "
+        after_index = index + len(lower_heading)
+        after = lower_text[after_index] if after_index < len(lower_text) else " "
+        before_ok = not before.isalnum()
+        after_ok = not after.isalnum()
+        if before_ok and after_ok:
+            return index
+        index = lower_text.find(lower_heading, index + 1)
+    return -1
 
 
 def _responsibility_from_sentences(sentences: list[str]) -> str:

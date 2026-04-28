@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# job-ai-bot
-Repo to create AI Job Bot
-=======
 # AI Job Application Assistant
 
 Local job-search helper for Product Manager, Product Owner, Business Analyst, and adjacent roles.
@@ -82,6 +78,22 @@ To test without internet:
 .\Run Sample Pipeline.bat
 ```
 
+## Push Updates To GitHub
+
+Double-click:
+
+```text
+Push To GitHub.bat
+```
+
+It will install portable Git inside this project if Git is missing, run the unit tests, commit the current code, and push to:
+
+```text
+https://github.com/prathit23/job-ai-bot
+```
+
+If GitHub asks for login, finish the browser/device login and run the same file again.
+
 ## Developer Notes
 
 Planning docs:
@@ -105,4 +117,3 @@ Direct app commands, if needed:
 & $py -m jobbot write-queue
 & $py -m jobbot serve
 ```
->>>>>>> dd1fffc (Initial job assistant)

@@ -51,6 +51,8 @@ class ReviewQueueTests(unittest.TestCase):
             csv_text = Path(result["csv"]).read_text(encoding="utf-8")
             self.assertIn("role_overview", csv_text)
             self.assertIn("key_responsibilities", csv_text)
+            self.assertIn("preferred_qualifications", csv_text)
+            self.assertIn("visa_sponsorship", csv_text)
             self.assertIn("full_description", csv_text)
             self.assertIn("Pipeline Summary", Path(result["markdown"]).read_text(encoding="utf-8"))
         finally:
@@ -71,6 +73,34 @@ class ReviewQueueTests(unittest.TestCase):
         self.assertIn("Lead cross-functional", sections["key_responsibilities"])
         self.assertIn("program management experience", sections["qualifications"])
         self.assertNotIn("financial infrastructure platform", sections["role_overview"])
+
+    def test_anthropic_style_role_section_is_not_cut_at_you_will(self):
+        sections = extract_role_sections(
+            {
+                "description": (
+                    "About Anthropic Anthropic's mission is to create reliable systems. "
+                    "About the Role As a Technical Program Manager for Security, Coordinated Vulnerability Disclosure (CVD), "
+                    "you will build and lead the programs that govern how Anthropic responsibly discloses software vulnerabilities. "
+                    "Traditional coordinated disclosure frameworks were designed for a different world. "
+                    "Responsibilities: Own end-to-end CVD program strategy and execution. Lead internal triage and quality assurance. "
+                    "You May Be a Good Fit If You Have: 10+ years of experience in cybersecurity and vulnerability management. "
+                    "Strong Candidates May Also Have: Experience building vulnerability disclosure programs. "
+                    "Deadline to Apply: None, applications will be received on a rolling basis. "
+                    "Annual Salary: $290,000 - $405,000 USD "
+                    "Logistics Minimum education: Bachelor's degree or equivalent experience. "
+                    "Visa sponsorship: We do sponsor visas!"
+                )
+            }
+        )
+        self.assertIn("you will build and lead", sections["role_overview"])
+        self.assertIn("Traditional coordinated disclosure", sections["role_overview"])
+        self.assertIn("Own end-to-end CVD", sections["key_responsibilities"])
+        self.assertIn("10+ years", sections["qualifications"])
+        self.assertIn("Experience building", sections["preferred_qualifications"])
+        self.assertIn("$290,000", sections["compensation"])
+        self.assertNotIn("range for this role", sections["compensation"])
+        self.assertIn("sponsor visas", sections["visa_sponsorship"])
+        self.assertNotIn("The annual", sections["application_deadline"])
 
     def test_csv_role_fields_are_not_character_truncated(self):
         long_role = " ".join([f"Responsibility sentence {i} drives roadmap and stakeholder alignment." for i in range(80)])
