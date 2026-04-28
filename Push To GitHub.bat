@@ -5,7 +5,7 @@ cd /d "%~dp0"
 
 set "GIT_EXE="
 where git >nul 2>nul
-if %ERRORLEVEL% EQU 0 (
+if not errorlevel 1 (
     for /f "delims=" %%G in ('where git') do (
         if not defined GIT_EXE set "GIT_EXE=%%G"
     )
@@ -58,7 +58,7 @@ if exist "%PY_EXE%" (
 ) else (
     python -m unittest discover -s tests
 )
-if %ERRORLEVEL% NEQ 0 (
+if errorlevel 1 (
     echo.
     echo Tests failed. Nothing was pushed.
     pause
@@ -68,7 +68,7 @@ if %ERRORLEVEL% NEQ 0 (
 echo.
 echo Preparing GitHub push...
 "%GIT_EXE%" remote get-url origin >nul 2>nul
-if %ERRORLEVEL% NEQ 0 (
+if errorlevel 1 (
     "%GIT_EXE%" remote add origin https://github.com/prathit23/job-ai-bot.git
 )
 
@@ -80,22 +80,22 @@ echo Staging project files...
 "%GIT_EXE%" add -A
 
 "%GIT_EXE%" diff --cached --quiet
-if %ERRORLEVEL% EQU 0 (
-    echo No code changes to commit. Pulling and pushing anyway...
-) else (
+if errorlevel 1 (
     "%GIT_EXE%" commit -m "Improve job assistant pipeline"
-    if %ERRORLEVEL% NEQ 0 (
+    if errorlevel 1 (
         echo.
         echo Commit failed. Check the message above.
         pause
         exit /b 1
     )
+) else (
+    echo No code changes to commit. Pulling and pushing anyway...
 )
 
 echo.
 echo Syncing with GitHub...
 "%GIT_EXE%" pull --rebase origin main
-if %ERRORLEVEL% NEQ 0 (
+if errorlevel 1 (
     echo.
     echo Pull/rebase failed. Resolve the issue shown above, then run this file again.
     pause
@@ -105,7 +105,7 @@ if %ERRORLEVEL% NEQ 0 (
 echo.
 echo Pushing to GitHub...
 "%GIT_EXE%" push -u origin main
-if %ERRORLEVEL% NEQ 0 (
+if errorlevel 1 (
     echo.
     echo Push failed. If GitHub asks for login, complete the browser/device login and run this again.
     pause
