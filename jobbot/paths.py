@@ -15,6 +15,7 @@ STATIC_DIR = ROOT / "static"
 DB_PATH = DATA_DIR / "jobs.sqlite3"
 TARGETS_PATH = CONFIG_DIR / "targets.json"
 SCORING_PATH = CONFIG_DIR / "scoring.json"
+PROFILE_PATH = CONFIG_DIR / "profile.json"
 SAMPLE_JOBS_PATH = SAMPLE_DATA_DIR / "sample_jobs.json"
 
 HOST = "127.0.0.1"

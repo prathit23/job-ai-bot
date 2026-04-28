@@ -12,6 +12,7 @@ from .utils import clean_text, timestamp_slug
 
 
 BUCKET_ORDER = ["apply", "maybe", "manual_review"]
+MAX_JOBS_PER_BUCKET = 25
 
 ROLE_HEADINGS = [
     "About the Role",
@@ -175,15 +176,24 @@ def write_daily_queue(
     date_slug: str | None = None,
 ) -> dict[str, str]:
     jobs = jobs if jobs is not None else list_jobs(db_path=db_path)
+    queue_jobs = limit_jobs_for_queue(jobs)
     date_slug = date_slug or timestamp_slug()
     output_dir.mkdir(parents=True, exist_ok=True)
     md_path = output_dir / f"{date_slug}.md"
     csv_path = output_dir / f"{date_slug}.csv"
     summary_path = output_dir / f"{date_slug}_summary.json"
-    md_path.write_text(render_markdown(jobs, date_slug), encoding="utf-8")
-    write_csv(jobs, csv_path)
-    summary_path.write_text(json.dumps(build_pipeline_summary(jobs), indent=2), encoding="utf-8")
+    md_path.write_text(render_markdown(queue_jobs, date_slug), encoding="utf-8")
+    write_csv(queue_jobs, csv_path)
+    summary_path.write_text(json.dumps(build_pipeline_summary(queue_jobs), indent=2), encoding="utf-8")
     return {"markdown": str(md_path), "csv": str(csv_path), "summary": str(summary_path)}
+
+
+def limit_jobs_for_queue(jobs: list[dict[str, Any]], per_bucket: int = MAX_JOBS_PER_BUCKET) -> list[dict[str, Any]]:
+    limited: list[dict[str, Any]] = []
+    for bucket in BUCKET_ORDER:
+        items = [job for job in jobs if job.get("bucket", "manual_review") == bucket]
+        limited.extend(sorted(items, key=lambda item: item.get("total_score", 0), reverse=True)[:per_bucket])
+    return limited
 
 
 def render_markdown(jobs: list[dict[str, Any]], date_slug: str) -> str:
@@ -236,7 +246,6 @@ def write_csv(jobs: list[dict[str, Any]], path: Path) -> None:
         "visa_sponsorship",
         "application_deadline",
         "company_overview",
-        "full_description",
         "status",
         "score_reasons",
     ]
@@ -263,7 +272,6 @@ def write_csv(jobs: list[dict[str, Any]], path: Path) -> None:
                     "visa_sponsorship": sections["visa_sponsorship"],
                     "application_deadline": sections["application_deadline"],
                     "company_overview": sections["company_overview"],
-                    "full_description": clean_text(job.get("description")),
                     "status": _csv_value(job.get("status")),
                     "score_reasons": _csv_value(job.get("score_reasons")),
                 }
@@ -462,7 +470,7 @@ def sentence_summary(text: str, max_sentences: int = 2) -> str:
     return text
 
 
-def markdown_summary(text: str, max_words: int = 80) -> str:
+def markdown_summary(text: str, max_words: int = 45) -> str:
     sentence_text = sentence_summary(text, max_sentences=3)
     words = sentence_text.split()
     if len(words) <= max_words:

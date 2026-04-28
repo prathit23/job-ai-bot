@@ -8,8 +8,9 @@ from pathlib import Path
 
 from . import db
 from .ingest import ingest_sample, ingest_targets
-from .paths import DB_PATH, HOST, PORT, STATIC_DIR
+from .paths import DB_PATH, HOST, PORT, PROFILE_PATH, STATIC_DIR
 from .review_queue import write_daily_queue
+from .utils import load_json
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -50,6 +51,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send_json(job or {"error": "not found"}, 200 if job else 404)
             if path == "/api/stats":
                 return self.send_json(db.get_stats())
+            if path == "/api/autofill-profile":
+                return self.send_json(autofill_profile())
             self.send_error(404)
         except Exception as exc:
             self.send_json({"error": str(exc)}, 500)
@@ -98,3 +101,24 @@ def serve(host: str = HOST, port: int = PORT, db_path: Path = DB_PATH) -> None:
     server = ThreadingHTTPServer((host, port), Handler)
     print(f"AI Job Application Assistant running at http://{host}:{port}")
     server.serve_forever()
+
+
+def autofill_profile() -> dict:
+    profile = load_json(PROFILE_PATH, {})
+    common_answers = profile.get("common_answers") or {}
+    return {
+        "fullName": profile.get("candidate_name", ""),
+        "email": profile.get("email", ""),
+        "phone": profile.get("phone", ""),
+        "location": profile.get("location", ""),
+        "linkedin": profile.get("linkedin", ""),
+        "portfolio": profile.get("portfolio", ""),
+        "salaryExpectation": profile.get("salary_expectation", ""),
+        "workAuthorization": profile.get("work_authorization", ""),
+        "needsSponsorship": profile.get("needs_sponsorship", ""),
+        "commonAnswers": {
+            "sponsorship": common_answers.get("sponsorship", ""),
+            "authorized": common_answers.get("authorized", ""),
+            "remote": common_answers.get("remote", ""),
+        },
+    }

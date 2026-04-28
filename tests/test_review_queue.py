@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from jobbot.review_queue import display_location, extract_role_sections, render_markdown, write_daily_queue
+from jobbot.review_queue import display_location, extract_role_sections, limit_jobs_for_queue, render_markdown, write_daily_queue
 from tests.helpers import cleanup_workspace_tmp, workspace_tmp_dir
 
 
@@ -53,7 +53,7 @@ class ReviewQueueTests(unittest.TestCase):
             self.assertIn("key_responsibilities", csv_text)
             self.assertIn("preferred_qualifications", csv_text)
             self.assertIn("visa_sponsorship", csv_text)
-            self.assertIn("full_description", csv_text)
+            self.assertNotIn("full_description", csv_text)
             self.assertIn("Pipeline Summary", Path(result["markdown"]).read_text(encoding="utf-8"))
         finally:
             cleanup_workspace_tmp(tmp)
@@ -145,6 +145,23 @@ class ReviewQueueTests(unittest.TestCase):
         self.assertIn("New York", location)
         self.assertNotIn("London", location)
         self.assertNotIn("Toronto", location)
+
+    def test_queue_limits_each_bucket_to_top_25(self):
+        jobs = []
+        for index in range(30):
+            jobs.append(
+                {
+                    "bucket": "apply",
+                    "title": f"Product Manager {index}",
+                    "company": "Example",
+                    "location": "Remote - United States",
+                    "total_score": index,
+                }
+            )
+        limited = limit_jobs_for_queue(jobs)
+        self.assertEqual(len(limited), 25)
+        self.assertEqual(limited[0]["total_score"], 29)
+        self.assertEqual(limited[-1]["total_score"], 5)
 
 
 if __name__ == "__main__":

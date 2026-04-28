@@ -80,6 +80,39 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual(result["bucket"], "skip")
         self.assertEqual(result["location_score"], 0)
 
+    def test_role_title_uses_single_longest_match(self):
+        result = score_job(
+            {
+                "title": "Technical Program Manager, Product Security",
+                "location": "Remote - United States",
+                "description": "Responsible for roadmap, stakeholders, and H-1B visa sponsorship.",
+            }
+        )
+        self.assertEqual(result["role_score"], 85)
+        self.assertIn("technical program manager", " ".join(result["score_reasons"]).lower())
+
+    def test_eeo_us_citizen_language_does_not_force_skip(self):
+        result = score_job(
+            {
+                "title": "Product Manager",
+                "location": "Remote - United States",
+                "description": "We welcome U.S. citizens, permanent residents, visa holders, and applicants from all backgrounds.",
+            }
+        )
+        self.assertNotEqual(result["sponsorship_signal"], "negative")
+        self.assertNotEqual(result["bucket"], "skip")
+
+    def test_required_us_citizenship_still_skips(self):
+        result = score_job(
+            {
+                "title": "Product Manager",
+                "location": "Remote - United States",
+                "description": "Applicants must be U.S. citizens due to contract requirements.",
+            }
+        )
+        self.assertEqual(result["sponsorship_signal"], "negative")
+        self.assertEqual(result["bucket"], "skip")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -15,7 +15,7 @@
     { "company": "Hume AI", "source": "greenhouse", "key": "humeai", "enabled": true },
     { "company": "Boomi", "source": "greenhouse", "key": "boomilp", "enabled": true },
     { "company": "Hightouch", "source": "greenhouse", "key": "hightouch", "enabled": true },
-    { "company": "Runway", "source": "greenhouse", "key": "runwayml", "enabled": true },
+    { "company": "Runway", "source": "greenhouse", "key": "runwayml", "enabled": false },
 
     { "company": "Ramp", "source": "ashby", "key": "ramp", "enabled": true },
     { "company": "Notion", "source": "ashby", "key": "notion", "enabled": true },
@@ -35,7 +35,7 @@
     { "company": "WorkOS", "source": "ashby", "key": "workos", "enabled": true },
     { "company": "Supabase", "source": "ashby", "key": "supabase", "enabled": true },
 
-    { "company": "Weights & Biases", "source": "lever", "key": "wandb", "enabled": true },
+    { "company": "Weights & Biases", "source": "lever", "key": "wandb", "enabled": false },
     { "company": "Palantir", "source": "lever", "key": "palantir", "enabled": true },
     { "company": "Spotify", "source": "lever", "key": "spotify", "enabled": true },
     { "company": "Netflix", "source": "lever", "key": "netflix", "enabled": false }

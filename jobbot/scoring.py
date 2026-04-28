@@ -180,7 +180,7 @@ def classify_sponsorship(text: str, config: dict[str, Any] | None = None) -> tup
     config = config or load_scoring_config()
     body = text.lower()
     reasons: list[str] = []
-    if any(term.lower() in body for term in config["negative_sponsorship_phrases"]):
+    if _has_negative_sponsorship_signal(body, config):
         reasons.append("Posting appears to rule out sponsorship.")
         return 0, "negative", reasons
     if any(term.lower() in body for term in config["positive_sponsorship_phrases"]):
@@ -198,19 +198,19 @@ def score_job(job: dict[str, Any], config: dict[str, Any] | None = None) -> dict
     combined = f"{title} {location} {description}".lower()
     reasons: list[str] = []
 
-    excluded_matches = [kw for kw in config["excluded_title_patterns"] if kw.lower() in title.lower()]
-    role_matches = [kw for kw in config["valid_title_patterns"] if kw.lower() in title.lower()]
-    if excluded_matches:
+    excluded_match = _longest_title_match(title, config["excluded_title_patterns"])
+    role_match = _longest_title_match(title, config["valid_title_patterns"])
+    if excluded_match:
         role_score = 0
-        reasons.append(f"Excluded title match: {', '.join(excluded_matches[:2])}.")
-    elif role_matches:
-        role_score = min(100, 50 + len(role_matches) * 20)
+        reasons.append(f"Excluded title match: {excluded_match}.")
+    elif role_match:
+        role_score = _role_score_for_match(role_match)
     else:
         role_score = 10
 
-    if role_matches:
-        reasons.append(f"Title role match: {', '.join(role_matches[:3])}.")
-    elif not excluded_matches:
+    if role_match:
+        reasons.append(f"Title role match: {role_match}.")
+    elif not excluded_match:
         reasons.append("No strong PM/PO/BA title match.")
 
     loc_lower = location.lower()
@@ -264,7 +264,7 @@ def score_job(job: dict[str, Any], config: dict[str, Any] | None = None) -> dict
     thresholds = config["bucket_thresholds"]
     if has_non_us_location and not has_us_location:
         bucket = "skip"
-    elif excluded_matches:
+    elif excluded_match:
         bucket = "skip"
     elif sponsorship_signal == "negative":
         bucket = "skip"
@@ -287,3 +287,53 @@ def score_job(job: dict[str, Any], config: dict[str, Any] | None = None) -> dict
         "score_reasons": reasons,
         "remote_flag": 1 if location_score == 100 and "remote" in combined else 0,
     }
+
+
+def _longest_title_match(title: str, patterns: list[str]) -> str:
+    title_lower = title.lower()
+    matches = [pattern for pattern in patterns if pattern.lower() in title_lower]
+    return max(matches, key=len) if matches else ""
+
+
+def _role_score_for_match(match: str) -> int:
+    match_lower = match.lower()
+    if "product owner" in match_lower:
+        return 100
+    if "product manager" in match_lower:
+        return 100
+    if "business analyst" in match_lower or "business systems analyst" in match_lower:
+        return 95
+    if "product analyst" in match_lower:
+        return 90
+    if "technical program manager" in match_lower:
+        return 85
+    if "program manager" in match_lower:
+        return 75
+    if "product operations" in match_lower or "product strategy" in match_lower:
+        return 80
+    if "strategy and operations" in match_lower or "business operations" in match_lower:
+        return 72
+    return 70
+
+
+def _has_negative_sponsorship_signal(body: str, config: dict[str, Any]) -> bool:
+    ignored_raw_terms = {
+        "us citizen",
+        "u.s. citizen",
+        "citizenship required",
+        "green card required",
+    }
+    for term in config["negative_sponsorship_phrases"]:
+        normalized = term.lower().strip()
+        if normalized in ignored_raw_terms:
+            continue
+        if normalized in body:
+            return True
+
+    citizenship_patterns = [
+        r"\b(must be|must currently be|only|limited to|required to be)\s+(a\s+)?u\.?s\.?\s+citizens?\b",
+        r"\bu\.?s\.?\s+citizens?\s+(only|required)\b",
+        r"\bcitizenship\s+(is\s+)?required\b",
+        r"\bgreen\s+card\s+(is\s+)?required\b",
+    ]
+    return any(re.search(pattern, body) for pattern in citizenship_patterns)
