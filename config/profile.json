@@ -1,0 +1,59 @@
+{
+  "candidate_name": "Candidate Name",
+  "email": "candidate@example.com",
+  "phone": "",
+  "location": "Boston, MA or New York, NY / Remote",
+  "linkedin": "",
+  "portfolio": "",
+  "work_authorization": "Requires H-1B sponsorship or transfer; keep sponsorship discussion accurate and human-reviewed.",
+  "needs_sponsorship": "Yes",
+  "salary_expectation": "",
+  "summary": "Product and business analysis professional experienced in translating customer, operational, and stakeholder needs into clear product requirements, delivery plans, and measurable outcomes.",
+  "skills": [
+    "Product Management",
+    "Product Ownership",
+    "Business Analysis",
+    "Requirements Gathering",
+    "User Stories",
+    "Roadmapping",
+    "Stakeholder Management",
+    "Agile",
+    "Scrum",
+    "Jira",
+    "Confluence",
+    "SQL",
+    "Data Analysis",
+    "Process Improvement",
+    "UAT",
+    "Go-to-Market",
+    "Customer Research",
+    "Analytics"
+  ],
+  "truth_bank": [
+    {
+      "title": "Requirements and stakeholder alignment",
+      "evidence": "Partnered with business and technical stakeholders to gather requirements, define user stories, and align delivery priorities.",
+      "tags": ["requirements", "stakeholder", "user stories", "business analysis", "product owner"]
+    },
+    {
+      "title": "Agile delivery support",
+      "evidence": "Supported agile delivery ceremonies by clarifying acceptance criteria, tracking dependencies, and helping teams move work from discovery to release.",
+      "tags": ["agile", "scrum", "delivery", "acceptance criteria", "jira"]
+    },
+    {
+      "title": "Data-informed prioritization",
+      "evidence": "Used operational data, user feedback, and business priorities to evaluate opportunities and recommend product or process improvements.",
+      "tags": ["data", "analytics", "prioritization", "process improvement", "product manager"]
+    },
+    {
+      "title": "Testing and launch readiness",
+      "evidence": "Coordinated UAT, documented issues, and worked with cross-functional partners to support successful launches.",
+      "tags": ["uat", "testing", "launch", "cross-functional", "release"]
+    }
+  ],
+  "common_answers": {
+    "sponsorship": "Yes, I will require H-1B sponsorship or transfer. Please review this answer before submitting.",
+    "authorized": "I am authorized to work based on my current status, and will require employer sponsorship for continued employment. Please review before submitting.",
+    "remote": "Open to remote, hybrid, Boston, and New York City roles."
+  }
+}

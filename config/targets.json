@@ -1,0 +1,43 @@
+{
+  "notes": "Company ATS source list. Greenhouse keys are board tokens; Lever keys are jobs.lever.co/{key}; Ashby keys are jobs.ashbyhq.com/{key}. Keep this list focused on companies likely to have PM/PO/BA/program/product-ops roles.",
+  "companies": [
+    { "company": "Stripe", "source": "greenhouse", "key": "stripe", "enabled": true },
+    { "company": "Airbnb", "source": "greenhouse", "key": "airbnb", "enabled": true },
+    { "company": "DoorDash USA", "source": "greenhouse", "key": "doordashusa", "enabled": true },
+    { "company": "Anthropic", "source": "greenhouse", "key": "anthropic", "enabled": true },
+    { "company": "Airtable", "source": "greenhouse", "key": "airtable", "enabled": true },
+    { "company": "Vercel", "source": "greenhouse", "key": "vercel", "enabled": true },
+    { "company": "Temporal", "source": "greenhouse", "key": "temporal", "enabled": true },
+    { "company": "Arize AI", "source": "greenhouse", "key": "arizeai", "enabled": true },
+    { "company": "RunPod", "source": "greenhouse", "key": "runpod", "enabled": true },
+    { "company": "Glean", "source": "greenhouse", "key": "gleanwork", "enabled": true },
+    { "company": "Intercom", "source": "greenhouse", "key": "intercom", "enabled": true },
+    { "company": "Hume AI", "source": "greenhouse", "key": "humeai", "enabled": true },
+    { "company": "Boomi", "source": "greenhouse", "key": "boomilp", "enabled": true },
+    { "company": "Hightouch", "source": "greenhouse", "key": "hightouch", "enabled": true },
+    { "company": "Runway", "source": "greenhouse", "key": "runwayml", "enabled": true },
+
+    { "company": "Ramp", "source": "ashby", "key": "ramp", "enabled": true },
+    { "company": "Notion", "source": "ashby", "key": "notion", "enabled": true },
+    { "company": "ElevenLabs", "source": "ashby", "key": "elevenlabs", "enabled": true },
+    { "company": "Deepgram", "source": "ashby", "key": "deepgram", "enabled": true },
+    { "company": "Vapi", "source": "ashby", "key": "vapi", "enabled": true },
+    { "company": "Bland AI", "source": "ashby", "key": "bland", "enabled": true },
+    { "company": "Sierra", "source": "ashby", "key": "sierra", "enabled": true },
+    { "company": "Decagon", "source": "ashby", "key": "decagon", "enabled": true },
+    { "company": "n8n", "source": "ashby", "key": "n8n", "enabled": true },
+    { "company": "Zapier", "source": "ashby", "key": "zapier", "enabled": true },
+    { "company": "Cohere", "source": "ashby", "key": "cohere", "enabled": true },
+    { "company": "LangChain", "source": "ashby", "key": "langchain", "enabled": true },
+    { "company": "Pinecone", "source": "ashby", "key": "pinecone", "enabled": true },
+    { "company": "Perplexity", "source": "ashby", "key": "perplexity", "enabled": true },
+    { "company": "Clay Labs", "source": "ashby", "key": "claylabs", "enabled": true },
+    { "company": "WorkOS", "source": "ashby", "key": "workos", "enabled": true },
+    { "company": "Supabase", "source": "ashby", "key": "supabase", "enabled": true },
+
+    { "company": "Weights & Biases", "source": "lever", "key": "wandb", "enabled": true },
+    { "company": "Palantir", "source": "lever", "key": "palantir", "enabled": true },
+    { "company": "Spotify", "source": "lever", "key": "spotify", "enabled": true },
+    { "company": "Netflix", "source": "lever", "key": "netflix", "enabled": false }
+  ]
+}

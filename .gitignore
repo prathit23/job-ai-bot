@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Local runtime data
+data/
+daily_queue/
+*.sqlite3
+*.db
+*.log
+*.pid
+
+# Local OS/editor files
+.DS_Store
+Thumbs.db
+*.lnk
+.vscode/
+.idea/
+
+# Secrets and private profile copies
+.env
+.env.*
+config/profile.local.json
+config/secrets.json

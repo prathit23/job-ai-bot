@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Local Job Assistant Autofill",
+  "version": "0.1.0",
+  "description": "Dry-run autofill helper for the local AI Job Application Assistant. It never submits forms.",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["http://127.0.0.1:8765/*"],
+  "action": {
+    "default_title": "Fill application fields"
+  },
+  "background": {
+    "service_worker": "service-worker.js"
+  }
+}

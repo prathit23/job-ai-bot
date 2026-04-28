@@ -1,0 +1,285 @@
+:root {
+  color-scheme: light;
+  --ink: #172026;
+  --muted: #66737f;
+  --line: #d8dee4;
+  --panel: #ffffff;
+  --paper: #f6f7f9;
+  --accent: #0f766e;
+  --accent-strong: #0b5f59;
+  --warning: #9a6700;
+  --danger: #b42318;
+  --good: #177245;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 28px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+button,
+select,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  padding: 9px 13px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--accent-strong);
+}
+
+button.secondary {
+  background: #fff;
+  color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+main {
+  padding: 22px 28px 32px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.stat {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 22px;
+}
+
+.stat span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 190px 190px;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink);
+  padding: 10px 11px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 46%) 1fr;
+  gap: 16px;
+  min-height: 620px;
+}
+
+.job-list,
+.detail-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.job-card {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+  padding: 14px;
+}
+
+.job-card:hover,
+.job-card.active {
+  background: #eef8f6;
+}
+
+.job-card h2 {
+  margin: 0 0 5px;
+  font-size: 16px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 8px;
+  background: #fff;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.badge.apply,
+.badge.positive {
+  color: var(--good);
+  border-color: #b7e0c6;
+  background: #effaf3;
+}
+
+.badge.maybe,
+.badge.unknown {
+  color: var(--warning);
+  border-color: #f0d98c;
+  background: #fff9db;
+}
+
+.badge.skip,
+.badge.negative {
+  color: var(--danger);
+  border-color: #f2b8b5;
+  background: #fff1f0;
+}
+
+.detail-panel {
+  padding: 18px;
+  overflow: auto;
+}
+
+.detail-panel h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(105px, 1fr));
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.score {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.score strong {
+  display: block;
+  font-size: 20px;
+}
+
+.score span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.section {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  margin-top: 14px;
+}
+
+.section h3 {
+  margin: 0 0 9px;
+  font-size: 15px;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.description {
+  max-height: 220px;
+  overflow: auto;
+  color: #2d3943;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.resume-preview {
+  white-space: pre-wrap;
+  background: #f8fafb;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  max-height: 360px;
+  overflow: auto;
+}
+
+.empty-state {
+  color: var(--muted);
+  padding: 20px;
+}
+
+@media (max-width: 880px) {
+  .topbar,
+  .layout,
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    display: grid;
+  }
+}

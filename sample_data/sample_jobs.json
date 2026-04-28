@@ -1,0 +1,32 @@
+[
+  {
+    "source": "sample",
+    "source_company_key": "sample-productco",
+    "company": "ProductCo",
+    "title": "Product Owner, Customer Platforms",
+    "location": "Remote - United States / Boston, MA",
+    "apply_url": "https://example.com/product-owner",
+    "description": "We are hiring a Product Owner to manage requirements, user stories, stakeholder alignment, agile delivery, UAT, and launch readiness. H-1B visa sponsorship may be available for qualified candidates.",
+    "posted_at": "2026-04-27"
+  },
+  {
+    "source": "sample",
+    "source_company_key": "sample-analytics",
+    "company": "AnalyticsWorks",
+    "title": "Business Systems Analyst",
+    "location": "Hybrid - New York, NY",
+    "apply_url": "https://example.com/business-systems-analyst",
+    "description": "Business Systems Analyst role focused on SQL, requirements gathering, process improvement, Jira, Confluence, stakeholder management, and UAT. Candidates must be authorized to work in the US without sponsorship.",
+    "posted_at": "2026-04-27"
+  },
+  {
+    "source": "sample",
+    "source_company_key": "sample-fintech",
+    "company": "FinTech Labs",
+    "title": "Associate Product Manager",
+    "location": "Boston, MA / Hybrid",
+    "apply_url": "https://example.com/apm",
+    "description": "Associate Product Manager role working with customer research, data analysis, roadmapping, go-to-market partners, and agile engineering teams. Sponsorship is not mentioned in the posting.",
+    "posted_at": "2026-04-27"
+  }
+]

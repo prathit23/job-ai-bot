@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Job Application Assistant</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Job Application Assistant</h1>
+        <p>Local review queue for PM, PO, BA, and adjacent roles.</p>
+      </div>
+      <div class="actions">
+        <button id="sampleIngestBtn" class="secondary">Load sample jobs</button>
+        <button id="liveIngestBtn">Run live ingest</button>
+        <button id="queueBtn" class="secondary">Write daily queue</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="stats" id="stats"></section>
+
+      <section class="filters">
+        <input id="searchInput" type="search" placeholder="Search title, company, or job description">
+        <select id="bucketFilter">
+          <option value="">All buckets</option>
+          <option value="apply">Apply</option>
+          <option value="maybe">Maybe</option>
+          <option value="manual_review">Manual review</option>
+          <option value="skip">Skip</option>
+        </select>
+        <select id="statusFilter">
+          <option value="">All statuses</option>
+          <option value="found">Found</option>
+          <option value="shortlisted">Shortlisted</option>
+          <option value="applied">Applied</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </section>
+
+      <section class="layout">
+        <div id="jobList" class="job-list" aria-live="polite"></div>
+        <aside id="jobDetail" class="detail-panel">
+          <div class="empty-state">Select a job to review fit, sponsorship signal, and next action.</div>
+        </aside>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
